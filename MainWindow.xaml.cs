@@ -23,6 +23,11 @@ namespace WpfApp1
             InitializeComponent();
         }
 
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            this.Focus();
+        }
+
         private void Number_Click(object sender, RoutedEventArgs e)
         {
             Button btn = (Button)sender;
@@ -38,17 +43,75 @@ namespace WpfApp1
             Button btn = (Button)sender;
             firstNumber = Convert.ToDouble(Display.Text);
             operation = btn.Content.ToString();
-            Display.Text = "0";
         }
 
         private void Equals_Click(object sender, RoutedEventArgs e)
         {
+            Calculate();
+        }
+        private void Clear_Click(object sender, RoutedEventArgs e)
+        {
+            ClearAll();
+        }
+
+        private void Window_KeyDown(object sender, KeyEventArgs e) {
+            if (e.Key >= Key.D0 && e.Key <= Key.D9) {
+                AddDigit((e.Key - Key.D0).ToString());
+            }
+            else if (e.Key >= Key.NumPad0 && e.Key <= Key.NumPad9) {
+                AddDigit((e.Key - Key.NumPad0).ToString());
+            }
+            else if (e.Key == Key.Add) {
+                setOperator("+");
+            }
+            else if (e.Key == Key.Subtract)
+            {
+                setOperator("-");
+            }
+            else if (e.Key == Key.Multiply)
+            {
+                setOperator("*");
+            }
+            else if (e.Key == Key.Divide)
+            {
+                setOperator("/");
+            }
+            else if (e.Key == Key.Enter)
+            {
+                Calculate();
+            }
+            else if (e.Key == Key.Escape)
+            {
+                ClearAll();
+            }
+        }
+
+
+        // Logic Helpers
+        private void AddDigit(string digit)
+        {
+            if (Display.Text == "0")
+                Display.Text = digit;
+            else
+                Display.Text += digit;
+        }
+
+        private void setOperator(string op)
+        {
+            firstNumber = Convert.ToDouble(Display.Text);
+            operation = op;
+            Display.Text = "0";
+        }
+
+        private void Calculate()
+        {
             double secondNumber = Convert.ToDouble(Display.Text);
             double result = 0;
 
-            switch (operation) {
+            switch (operation)
+            {
                 case "+":
-                    result = firstNumber + secondNumber; 
+                    result = firstNumber + secondNumber;
                     break;
                 case "-":
                     result = firstNumber - secondNumber;
@@ -68,10 +131,10 @@ namespace WpfApp1
                     }
                     break;
             }
-
             Display.Text = result.ToString();
         }
-        private void Clear_Click(object sender, RoutedEventArgs e)
+
+        private void ClearAll()
         {
             Display.Text = "0";
             firstNumber = 0;
